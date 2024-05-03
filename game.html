@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hogwarts House Battles</title>
+    <link rel="stylesheet" href="layout.css">
+    <script src="logic.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'> <!-- For the Font-->
+</head>
+
+<body onload="start()">
+    <div id="deck">
+        <div class="card" onclick="clickCard(0)" id="card1"></div>
+        <div class="card" onclick="clickCard(1)" id="card2"></div>
+        <div class="card" onclick="clickCard(2)" id="card3"></div>
+        <div class="card" onclick="clickCard(3)" id="card4"></div>
+        <div class="card" onclick="clickCard(4)" id="card5"></div>
+    </div>
+    <button onclick="reshuffle()">Reshuffle</button>
+    <div class="stats">
+        <h1 id="hp">Health: 100/100</h1>
+        <h1 id="bl">Block: 0</h1>
+        <h1 id="en">Energy: 2/2</h1>
+    </div>
+    <div class="Enemystats">
+        <h1 id="ehp">Health: 100/100</h1>
+        <h1 id="eatk">Attack: 5</h1>
+    </div>
+</body>
+
+</html>
