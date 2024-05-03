@@ -48,7 +48,6 @@ function update() {
         }
         else if (deck[i].role == "erg") {
             deck[i].value = Math.floor(Math.random() * 3) + 1;
-            deck[i].el.innerHTML = deck[i].value;
             deck[i].el.style.color = "Orange"
             deck[i].el.style.backgroundColor = "Gold"
             deck[i].el.style.border = "4px solid yellow"
@@ -82,20 +81,25 @@ function randomNumByChance() {
 function clickCard(cardNum) {
     if (canClick == true && player_stats.energy > 0) {
         if (deck[cardNum].role == "other") {
+            player_stats.energy -= 1;
+            player_lose_energy()
             reshuffle();
         }
         else if (deck[cardNum].role ==  "erg") {
-            player_stats.energy += (deck[cardNum].value + 1)
+            player_stats.energy += deck[cardNum].value;
         }
         else if (deck[cardNum].role ==  "blk") {
             player_stats.block += deck[cardNum].value
+            player_stats.energy -= 1;
+            player_lose_energy()
         }
         else if (deck[cardNum].role ==  "atk") {
             enemy_stats.health -= deck[cardNum].value
+            player_stats.energy -= 1;
+            player_lose_energy()
         }
         deck[cardNum].el.style.display = "None";
         cards -= 1;
-        player_stats.energy -= 1;
         update()
         if (player_stats.energy <= 0 || cards <= 0) {
             enemyTurn();
@@ -107,12 +111,14 @@ function clickCard(cardNum) {
 }
 
 function enemyTurn() {
-    while (player_stats.block > 0) {
+    for (let i = 0; i < player_stats.block; i++) {
         player_stats.block -= 1;
         enemy_stats.value -= 1;
+        player_lose_block()
     }
     if (player_stats.block <= 0 && enemy_stats.value > 0) {
         player_stats.health -= enemy_stats.value
+        player_lose_hp()
     }
     player_stats.energy = 2;
     cards = 5;
@@ -152,10 +158,10 @@ function shuffle() {
         clearInterval(shuffle_time); // Stop the interval
         for (let i = 0; i < deck.length; i++) {
             document.getElementById("card" + (i + 1)).style.opacity = 1;
-            document.getElementById("card" + (i + 1)).style.fontSize = "85px"
+            document.getElementById("card" + (i + 1)).style.fontSize = "60px"
             setTimeout(function() {
                 document.getElementById("card" + (i + 1)).style.opacity = 0.8;
-                document.getElementById("card" + (i + 1)).style.fontSize = "75px"
+                document.getElementById("card" + (i + 1)).style.fontSize = "50px"
                 canClick = true;
             },cooldown)
         }
