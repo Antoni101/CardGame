@@ -5,61 +5,36 @@ var shuffleSpeed = 50;
 var cooldown = 250;
 var cards = 5;
 
-card1 = { value: 5, role: "atk", el:null  }; 
-card2 = { value: 5, role: "blk", el:null  };
-card3 = { value: 5, role: "atk", el:null  }; 
-card4 = { value: 5, role: "atk", el:null  };
-card5 = { value: 5, role: "erg", el:null  };
 
-
-deck = [
-    card1,
-    card2,
-    card3,
-    card4,
-    card5
-];
-
-Pstats = {
-    health: 100,
-    block: 0,
-    energy: 2,
-    value: 10
-}
-
-Estats = {
-    health: 100,
-    value: 10,
-    maxDmg: 10
-}
-
-function start() {
-    randomizeCards()
-    refresh();
+function playerTurn() {
+    reshuffle()
     update()
 }
 
-function refresh() {
-    if (Pstats.health <= 0) {
+function start() {
+    for (let i = 0; i < deck.length; i++) {
+        deck[i].el = document.getElementById("card" + (i + 1))
+    }
+    playerTurn()
+}
+
+function update() {
+    if (player_stats.health <= 0) {
         alert("You Lost!")
-        location.reload();
-    } else if (Estats.health <= 0) {
+        location.reload()
+    } else if (enemy_stats.health <= 0) {
         alert("You Win!")
         location.reload();
     }
     else {
-        document.getElementById("hp").innerHTML = "Health: " + Pstats.health + "/100" 
-        document.getElementById("bl").innerHTML = "Block: " + Pstats.block
-        document.getElementById("en").innerHTML = "Energy: " + Pstats.energy + "/2"
-        document.getElementById("ehp").innerHTML = "Health: " + Estats.health + "/100" 
-        document.getElementById("eatk").innerHTML = "Attack: " + Estats.value;
+        document.getElementById("hp").innerHTML = "Health: " + player_stats.health + "/100" 
+        document.getElementById("bl").innerHTML = "Block: " + player_stats.block
+        document.getElementById("en").innerHTML = "Energy: " + player_stats.energy + "/2"
+        document.getElementById("ehp").innerHTML = "Health: " + enemy_stats.health + "/100" 
+        document.getElementById("eatk").innerHTML = "Attack: " + enemy_stats.value;
     }
-}
 
-function update() {
     for (let i = 0; i < deck.length; i++) {
-        deck[i].el = document.getElementById("card" + (i + 1))
-        deck[i].el.style.display = "inline-block";
         document.getElementById("card" + (i + 1)).innerHTML = deck[i].value;
         if (deck[i].role == "blk") {
             deck[i].el.style.color = "blue"
@@ -104,66 +79,53 @@ function randomNumByChance() {
     }
 }
 
-function randomizeCards() {
-    var randNum;
-    for (let i = 0; i < deck.length; i++) {
-        randNum = randomNumByChance();
-        deck[i].value = Math.floor(Math.random() * Pstats.value);
-        if (deck[i].value == 0) {deck[i].value ++;} //In case it gets 0
-        if (randNum == 1) { deck[i].role = "atk" }
-        else if (randNum == 2) { deck[i].role = "blk" }
-        else if (randNum == 3) { deck[i].role = "erg" }
-        else { deck[i].role = "other" }
-    }
-}
-
 function clickCard(cardNum) {
-    if (canClick == true && Pstats.energy > 0) {
+    if (canClick == true && player_stats.energy > 0) {
         if (deck[cardNum].role == "other") {
             reshuffle();
         }
         else if (deck[cardNum].role ==  "erg") {
-            Pstats.energy += (deck[cardNum].value + 1)
-            refresh()
+            player_stats.energy += (deck[cardNum].value + 1)
         }
         else if (deck[cardNum].role ==  "blk") {
-            Pstats.block += deck[cardNum].value
-            refresh()
+            player_stats.block += deck[cardNum].value
         }
         else if (deck[cardNum].role ==  "atk") {
-            Estats.health -= deck[cardNum].value
-            refresh()
+            enemy_stats.health -= deck[cardNum].value
         }
         deck[cardNum].el.style.display = "None";
         cards -= 1;
-        Pstats.energy -= 1;
-        refresh()
-        if (Pstats.energy <= 0 || cards <= 0) {
+        player_stats.energy -= 1;
+        update()
+        if (player_stats.energy <= 0 || cards <= 0) {
             enemyTurn();
         }
     }
-    else if (Pstats.energy <= 0) {
+    else if (player_stats.energy <= 0) {
         enemyTurn()
     }
 }
 
 function enemyTurn() {
-    while (Pstats.block > 0) {
-        Pstats.block -= 1;
-        Estats.value -= 1;
+    while (player_stats.block > 0) {
+        player_stats.block -= 1;
+        enemy_stats.value -= 1;
     }
-    if (Pstats.block <= 0 && Estats.value > 0) {
-        Pstats.health -= Estats.value
+    if (player_stats.block <= 0 && enemy_stats.value > 0) {
+        player_stats.health -= enemy_stats.value
     }
-    Pstats.energy = 2;
+    player_stats.energy = 2;
     cards = 5;
-    Estats.value = Math.floor(Math.random() * Estats.maxDmg);
-    Estats.maxDmg += 5;
-    Pstats.value += 2;
+    enemy_stats.value = Math.floor(Math.random() * enemy_stats.maxDmg);
+    enemy_stats.maxDmg += 5;
+    player_stats.value += 2;
     setTimeout(reshuffle(),cooldown)
 }
 
 function reshuffle() {
+    for (let i = 0; i < deck.length; i++) {
+        deck[i].el.style.display = "Inline-Block";
+    }
     if (canClick == true) {
         counter = 25
         for (let i = 0; i < deck.length; i++) {
@@ -175,8 +137,17 @@ function reshuffle() {
 }
 
 function shuffle() {
-    randomizeCards();
+    var randNum;
     counter -= 1;
+    for (let i = 0; i < deck.length; i++) {
+        randNum = randomNumByChance();
+        deck[i].value = Math.floor(Math.random() * player_stats.value);
+        if (deck[i].value == 0) {deck[i].value ++;} //In case it gets 0
+        if (randNum == 1) { deck[i].role = "atk" }
+        else if (randNum == 2) { deck[i].role = "blk" }
+        else if (randNum == 3) { deck[i].role = "erg" }
+        else { deck[i].role = "other" }
+    }
     if (counter <= 0) {
         clearInterval(shuffle_time); // Stop the interval
         for (let i = 0; i < deck.length; i++) {
@@ -190,7 +161,6 @@ function shuffle() {
         }
     }
     update();
-    refresh()
 }
 
 
