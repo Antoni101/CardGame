@@ -16,9 +16,9 @@ body, html {
     background-color: Linen;
     margin: 0 auto;
     display: inline-block; 
-    transition: 0.5s; 
+    transition: 0.2s; 
     opacity: 0.8;
-    font-size: 75px;
+    font-size: 50px;
     text-align: center;
 }
 
@@ -32,6 +32,45 @@ body, html {
     transform: translateY(-40px);
 }
 
+.Playerstats {
+    text-align: left;
+    color: lightskyblue;
+    position: fixed;
+    top: 5%;
+    left: 2%;
+    text-shadow: cyan 0.5px 0 5px;
+}
+
+#hp {
+    font-size: 25px;
+    transition: 0.5s;
+}
+
+#bl {
+    font-size: 20px;
+    transition: 0.5s;
+}
+
+#en {
+    font-size: 15px;
+    transition: 0.5s;
+}
+
 .Enemystats {
-    float: right;
+    text-align: right;
+    color: LightCoral;
+    position: fixed;
+    top: 5%;
+    left: 85%;
+    text-shadow: LightCoral 0.5px 0 5px;
+}
+
+#ehp {
+    font-size: 25px;
+    transition: 0.5s;
+}
+
+#eatk {
+    font-size: 25px;
+    transition: 0.5s;
 }
